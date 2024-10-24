@@ -34,6 +34,12 @@ class MessageManager {
             () => (this.isComposing = false)
         );
         this.sendBox.addEventListener("keydown", (e) => this.handleEnterKey(e));
+        this.sendBox.addEventListener("focus", () =>
+            this.toggleInputLeftBtn(true)
+        );
+        this.sendBox.addEventListener("blur", () =>
+            this.toggleInputLeftBtn(false)
+        );
     }
 
     scrollToBottom(target) {
@@ -56,6 +62,26 @@ class MessageManager {
         } else {
             this.micBtn.classList.add("hidden");
             this.sendBtn.classList.remove("hidden");
+        }
+    }
+
+    toggleInputLeftBtn(isFocused) {
+        const addBtn = document.querySelector("#add_btn");
+        const cameraBtn = document.querySelector("#camera_btn");
+        const photnBtn = document.querySelector("#image_btn");
+        const notFocusBtns = [addBtn, cameraBtn, photnBtn];
+        const arrowBtn = document.querySelector("#arrow_btn");
+        const focusBtns = [arrowBtn];
+        if (isFocused) {
+            notFocusBtns.forEach((btn) => {
+                btn.classList.add("hidden");
+            });
+            arrowBtn.classList.remove("hidden");
+        } else {
+            notFocusBtns.forEach((btn) => {
+                btn.classList.remove("hidden");
+            });
+            arrowBtn.classList.add("hidden");
         }
     }
 
@@ -99,8 +125,8 @@ class MessageManager {
         return `${hours}:${minutes}`;
     }
 
-    createMessage(content, time, is_from_me = true) {
-        const templateName = is_from_me ? "me" : "friend";
+    createMessage(content, time, isFromMe = true) {
+        const templateName = isFromMe ? "me" : "friend";
         const messageTemplate = document.querySelector(
             `#message_template_from_${templateName}`
         );
@@ -119,8 +145,13 @@ class MessageManager {
             isReadTag.classList.remove("hidden");
         }
         sendTimeTag.textContent = time;
-        contentTag.innerHTML = marked.parse(content);
-
+        let contentHTML = content;
+        if (!isFromMe) {
+            contentHTML = `<div class="my-[5px]">${marked.parse(
+                content
+            )}</div>`;
+        }
+        contentTag.innerHTML = contentHTML;
         this.messageContainer.appendChild(message);
         this.scrollToBottom(message);
     }
