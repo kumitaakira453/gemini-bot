@@ -47,10 +47,8 @@ class MessageManager {
         mainContainer.scrollTop = mainContainer.scrollHeight;
         const targetPosition = target.offsetTop;
 
-        // 30vhをピクセルに変換
         const offset = window.innerHeight * 0.3;
 
-        // targetの上端 + 30vhの位置までスクロール
         mainContainer.scrollTop = targetPosition - offset;
     }
     toggleMicSendButton() {
@@ -87,7 +85,7 @@ class MessageManager {
 
     handleEnterKey(e) {
         if (e.key === "Enter" && !this.isComposing) {
-            e.preventDefault(); // デフォルトのエンターキーの動作を防ぐ（例: フォーム送信）
+            e.preventDefault();
             this.sendMessage();
         }
     }
